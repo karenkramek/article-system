@@ -1,38 +1,39 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ArticlesModule } from './articles/articles.module';
 import { PermissionsModule } from './permissions/permissions.module';
+import { User } from './users/entities/user.entity';
+import { Article } from './articles/entities/article.entity';
+import { Permission } from './permissions/entities/permission.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: '.env',
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: configService.get('POSTGRES_HOST'),
-        port: configService.get<number>('POSTGRES_PORT'),
+        host: configService.get('POSTGRES_HOST') || 'localhost',
+        port: configService.get<number>('POSTGRES_PORT') || 5432,
         username: configService.get('POSTGRES_USER'),
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: configService.get('NODE_ENV') !== 'production',
+        entities: [User, Article, Permission],
+        synchronize: true, // Disable in production!
+        logging: configService.get('NODE_ENV') === 'development',
       }),
+      inject: [ConfigService],
     }),
     AuthModule,
     UsersModule,
     ArticlesModule,
     PermissionsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

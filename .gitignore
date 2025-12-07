@@ -4,6 +4,10 @@
 /build
 /tmp
 
+# Test coverage
+/coverage
+*.lcov
+
 # Logs
 logs
 *.log
@@ -13,12 +17,33 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IDE - JetBrains
+.idea/
+*.iml
+*.iws
+*.ipr
+
 # dotenv environment variable files
 .env
 .env.development
 .env.test
 .env.production
+.env.local
 
 # temp directory
 .temp
 .tmp
+
+# Docker
+docker-compose.override.yml

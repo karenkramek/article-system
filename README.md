@@ -1,98 +1,349 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Sistema de Artigos
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Sistema simples de gerenciamento de artigos e usuários com autenticação JWT e controle de permissões baseado em roles (Admin, Editor, Reader).
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+> 📋 Criado a partir do enunciado do [desafio técnico](./Challenge.md).
 
-## Description
+## 📋 Descrição
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+API RESTful headless desenvolvida com NestJS, PostgreSQL e TypeORM que permite:
 
-## Project setup
+- 🔐 Autenticação via JWT com permissões incluídas no token
+- 👥 Gerenciamento de usuários (CRUD completo)
+- 📝 Gerenciamento de artigos (CRUD completo)
+- 🎯 Sistema de permissões com 3 níveis de acesso
+- 🗑️ Soft delete em todas as entidades
+- 🐳 Ambiente completo via Docker
 
-```bash
-$ npm install
-```
+## 🚀 Tecnologias
 
-## Compile and run the project
+- **NestJS** - Framework Node.js
+- **TypeScript** - Linguagem de programação
+- **PostgreSQL** - Banco de dados relacional
+- **TypeORM** - ORM para TypeScript
+- **JWT** - Autenticação via tokens
+- **bcrypt** - Hash de senhas
+- **class-validator** - Validação de DTOs
+- **Docker & Docker Compose** - Containerização
 
-```bash
-# development
-$ npm run start
+## 🎭 Níveis de Permissão
 
-# watch mode
-$ npm run start:dev
+| Permissão | Descrição | Ações |
+|-----------|-----------|-------|
+| **Admin** | Acesso total ao sistema | CRUD de usuários e artigos |
+| **Editor** | Gerenciamento de artigos | CRUD de artigos |
+| **Reader** | Leitura de artigos | Visualizar artigos |
 
-# production mode
-$ npm run start:prod
-```
+## 📦 Instalação e Execução (Docker)
 
-## Run tests
+### Pré-requisitos
+
+- Docker instalado ([Docker Desktop](https://www.docker.com/products/docker-desktop) ou [Colima](https://github.com/abiosoft/colima) para macOS)
+- Docker Compose
+
+### 1. Clone o repositório
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+git clone https://github.com/karenkramek/article-system.git
+cd article-system
 ```
 
-## Deployment
+### 2. Configure as variáveis de ambiente
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+O arquivo `.env.example` contém as variáveis necessárias. Copie e ajuste conforme necessário:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+cp .env.example .env
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Variáveis principais:
+```env
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_DB=
+JWT_SECRET=
+PORT=
+```
 
-## Resources
+### 3. Suba a aplicação
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+docker compose up --build
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+A aplicação estará disponível em: **http://localhost:3000**
 
-## Support
+### 4. Parar a aplicação
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+# Parar containers
+docker compose down
 
-## Stay in touch
+# Parar e remover volumes (apaga dados do banco)
+docker compose down -v
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## 🗄️ Migrations (Desenvolvimento Local)
 
-## License
+O projeto suporta migrations do TypeORM para controle de versão do schema do banco de dados.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Comandos disponíveis:
+
+```bash
+# Gerar migration automaticamente baseada nas mudanças das entities
+npm run migration:generate -- src/database/migrations/MigrationName
+
+# Criar migration vazia manualmente
+npm run migration:create -- src/database/migrations/MigrationName
+
+# Executar migrations pendentes
+npm run migration:run
+
+# Reverter última migration executada
+npm run migration:revert
+```
+
+### Exemplo de uso:
+
+```bash
+# 1. Após modificar uma entity, gere a migration
+npm run migration:generate -- src/database/migrations/AddEmailVerification
+
+# 2. Execute a migration
+npm run migration:run
+```
+
+**Nota:** No ambiente Docker, o projeto usa `synchronize: true` para desenvolvimento. Em produção, o synchronize deve ser desabilitado e usar somente migrations.
+
+## 🧪 Como Testar
+
+### Usuário Root (criado automaticamente)
+
+Ao subir a aplicação, um usuário administrador é criado automaticamente:
+
+- **Email**: `root@example.com`
+- **Senha**: `root123456`
+- **Permissão**: Admin
+
+### 1. Login (obter JWT)
+
+```bash
+curl -X POST http://localhost:3000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "root@example.com",
+    "password": "root123456"
+  }'
+```
+
+**Resposta:**
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "uuid",
+    "name": "Root Admin",
+    "email": "root@example.com",
+    "permissions": [{"name": "admin", ...}]
+  }
+}
+```
+
+Salve o `access_token` para usar nas próximas requisições.
+
+### 2. Criar um novo usuário
+
+```bash
+curl -X POST http://localhost:3000/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "João Silva",
+    "email": "joao@example.com",
+    "password": "senha123"
+  }'
+```
+
+### 3. Criar um artigo (requer autenticação)
+
+```bash
+curl -X POST http://localhost:3000/articles \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
+  -d '{
+    "title": "Meu Primeiro Artigo",
+    "content": "Este é o conteúdo do meu artigo de teste."
+  }'
+```
+
+### 4. Listar artigos
+
+```bash
+curl http://localhost:3000/articles \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI"
+```
+
+### 5. Buscar artigo por ID
+
+```bash
+curl http://localhost:3000/articles/UUID_DO_ARTIGO \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI"
+```
+
+### 6. Atualizar artigo
+
+```bash
+curl -X PATCH http://localhost:3000/articles/UUID_DO_ARTIGO \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
+  -d '{
+    "title": "Título Atualizado"
+  }'
+```
+
+### 7. Deletar artigo (soft delete)
+
+```bash
+curl -X DELETE http://localhost:3000/articles/UUID_DO_ARTIGO \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI"
+```
+
+## 📚 Endpoints Disponíveis
+
+### Autenticação
+
+| Método | Endpoint | Descrição | Autenticação |
+|--------|----------|-----------|--------------|
+| POST | `/auth/login` | Login e geração de JWT | Não |
+
+### Usuários
+
+| Método | Endpoint | Descrição | Permissão |
+|--------|----------|-----------|-----------|
+| POST | `/users` | Criar usuário | Pública |
+| GET | `/users` | Listar usuários | Admin |
+| GET | `/users/:id` | Buscar usuário por ID | Admin |
+| PATCH | `/users/:id` | Atualizar usuário | Admin |
+| DELETE | `/users/:id` | Deletar usuário | Admin |
+
+### Artigos
+
+| Método | Endpoint | Descrição | Permissão |
+|--------|----------|-----------|-----------|
+| POST | `/articles` | Criar artigo | Admin, Editor |
+| GET | `/articles` | Listar artigos | Admin, Editor, Reader |
+| GET | `/articles/:id` | Buscar artigo por ID | Admin, Editor, Reader |
+| PATCH | `/articles/:id` | Atualizar artigo | Admin, Editor (autor) |
+| DELETE | `/articles/:id` | Deletar artigo | Admin, Editor (autor) |
+
+## 🧩 Estrutura do Projeto
+
+```
+src/
+├── articles/          # Módulo de artigos
+│   ├── dto/          # Data Transfer Objects
+│   ├── entities/     # Entidade Article
+│   ├── articles.controller.ts
+│   ├── articles.service.ts
+│   └── articles.module.ts
+├── auth/             # Módulo de autenticação
+│   ├── decorators/   # Custom decorators
+│   ├── dto/          # DTOs de login
+│   ├── guards/       # JWT e Permission guards
+│   ├── strategies/   # Passport JWT strategy
+│   ├── auth.controller.ts
+│   ├── auth.service.ts
+│   └── auth.module.ts
+├── permissions/      # Módulo de permissões
+│   ├── entities/     # Entidade Permission
+│   ├── permissions.service.ts
+│   └── permissions.module.ts
+├── users/            # Módulo de usuários
+│   ├── dto/          # DTOs de usuário
+│   ├── entities/     # Entidade User
+│   ├── users.controller.ts
+│   ├── users.service.ts
+│   └── users.module.ts
+├── database/
+│   └── seeds/        # Seeds do banco
+├── app.module.ts     # Módulo principal
+└── main.ts           # Entry point
+```
+
+## 🔒 Segurança
+
+- ✅ Senhas hasheadas com bcrypt (salt rounds: 10)
+- ✅ JWT com expiração configurável
+- ✅ Guards para autenticação e autorização
+- ✅ Validação de entrada com class-validator
+- ✅ Senha excluída da serialização de usuários
+- ✅ CORS habilitado
+
+## 🧪 Testes
+
+### Executar Testes
+
+```bash
+# Testes unitários
+npm run test
+
+# Modo watch (desenvolvimento)
+npm run test:watch
+
+# Coverage completo
+npm run test:cov
+```
+
+### Testes Implementados
+
+Os testes unitários cobrem as seguintes áreas essenciais:
+
+#### ✅ PermissionsService
+- Listagem de permissões
+- Busca por nome
+- Seed automático de permissões
+
+#### ✅ AuthService
+- Login com credenciais válidas
+- Validação de usuário e senha
+- Geração de JWT
+- Tratamento de credenciais inválidas
+
+#### ✅ UsersService
+- Criação de usuários
+- Validação de email duplicado
+- Atualização de dados
+- Remoção de usuários
+- Hash de senhas
+
+#### ✅ ArticlesService
+- Criação de artigos
+- Listagem e busca
+- Atualização com controle de permissões
+- Remoção com validação de autor/admin
+- Regras de negócio de permissões
+
+### Cobertura de Testes
+
+Os testes cobrem:
+- ✅ Casos de sucesso
+- ✅ Validações de erro (NotFoundException, ConflictException, ForbiddenException)
+- ✅ Regras de permissão (Admin, Editor, Reader)
+- ✅ Autenticação e autorização
+- ✅ Hash de senhas
+- ✅ Validação de dados
+
+**Cobertura atual dos Services:**
+- AuthService: ~100% (login, validação)
+- UsersService: ~90% (CRUD, validações)
+- ArticlesService: ~100% (CRUD, permissões)
+- PermissionsService: ~94% (listagem, seed)
+
+### Executar Testes no Docker
+
+```bash
+# Subir container apenas para testes
+docker compose run --rm app npm run test
+
+# Coverage no Docker
+docker compose run --rm app npm run test:cov
+```
