@@ -1,0 +1,698 @@
+{
+	"info": {
+		"_postman_id": "article-system-api",
+		"name": "Article System API",
+		"description": "Collection para o sistema de artigos com autenticação JWT e controle de permissões",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "article_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "admin_permission_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "editor_permission_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "reader_permission_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login Root (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('jwt_token', response.access_token);",
+									"    console.log('Token JWT salvo:', response.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"root@example.com\",\n  \"password\": \"root123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login como usuário root (Admin) - credenciais criadas automaticamente no seed"
+					},
+					"response": []
+				},
+				{
+					"name": "Login Editor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('jwt_token', response.access_token);",
+									"    console.log('Token JWT salvo:', response.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"editor@example.com\",\n  \"password\": \"editor123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login como usuário editor (apenas artigos)"
+					},
+					"response": []
+				},
+				{
+					"name": "Login Reader",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('jwt_token', response.access_token);",
+									"    console.log('Token JWT salvo:', response.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"reader@example.com\",\n  \"password\": \"reader123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login como usuário reader (somente leitura)"
+					},
+					"response": []
+				},
+				{
+					"name": "Login Inválido",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"wrong@example.com\",\n  \"password\": \"wrongpassword\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Testar login com credenciais inválidas (deve retornar 401)"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints de autenticação"
+		},
+		{
+			"name": "Permissions",
+			"item": [
+				{
+					"name": "Get All Permissions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.length > 0) {",
+									"        // Salvar ID de cada permissão",
+									"        const adminPermission = response.find(p => p.name === 'admin');",
+									"        const editorPermission = response.find(p => p.name === 'editor');",
+									"        const readerPermission = response.find(p => p.name === 'reader');",
+									"        ",
+									"        if (adminPermission) {",
+									"            pm.collectionVariables.set('admin_permission_id', adminPermission.id);",
+									"            console.log('✅ Admin Permission ID:', adminPermission.id);",
+									"        }",
+									"        if (editorPermission) {",
+									"            pm.collectionVariables.set('editor_permission_id', editorPermission.id);",
+									"            console.log('✅ Editor Permission ID:', editorPermission.id);",
+									"        }",
+									"        if (readerPermission) {",
+									"            pm.collectionVariables.set('reader_permission_id', readerPermission.id);",
+									"            console.log('✅ Reader Permission ID:', readerPermission.id);",
+									"        }",
+									"        console.log('\\n📋 Use as variáveis nos requests:');",
+									"        console.log('   {{admin_permission_id}}');",
+									"        console.log('   {{editor_permission_id}}');",
+									"        console.log('   {{reader_permission_id}}');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/permissions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"permissions"
+							]
+						},
+						"description": "Listar todas as permissões disponíveis (admin, editor, reader) com seus IDs. Os IDs são salvos automaticamente nas variáveis da collection para uso posterior."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Permission by Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/permissions?name=reader",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"permissions"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "reader",
+									"description": "Nome da permissão (admin, editor ou reader)"
+								}
+							]
+						},
+						"description": "Buscar permissão específica por nome. Altere o valor do query parameter 'name' para buscar: admin, editor ou reader."
+					},
+					"response": []
+				}
+			],
+			"description": "Consulta de permissões disponíveis no sistema"
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create User (Public)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('user_id', response.id);",
+									"    console.log('User ID salvo:', response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"João Silva\",\n  \"email\": \"joao.silva@example.com\",\n  \"password\": \"senha123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"description": "Criar novo usuário (endpoint público, não requer autenticação)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create User with Permissions (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('user_id', response.id);",
+									"    console.log('User ID salvo:', response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Karen Kramek\",\n  \"email\": \"karen.kramek@example.com\",\n  \"password\": \"senha123456\",\n  \"permissions\": [\"reader\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"description": "Criar usuário com permissão reader usando o nome da permissão (admin, editor ou reader)."
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"description": "Listar todos os usuários (requer permissão admin)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}}"
+							]
+						},
+						"description": "Buscar usuário por ID (requer permissão admin)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"João Silva Atualizado\",\n  \"permissions\": [\"editor\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}}"
+							]
+						},
+						"description": "Atualizar dados do usuário (requer permissão admin)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}}"
+							]
+						},
+						"description": "Deletar usuário (requer permissão admin)"
+					},
+					"response": []
+				}
+			],
+			"description": "Gerenciamento de usuários"
+		},
+		{
+			"name": "Articles",
+			"item": [
+				{
+					"name": "Create Article (Admin/Editor)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('article_id', response.id);",
+									"    console.log('Article ID salvo:', response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Meu Primeiro Artigo\",\n  \"content\": \"Este é o conteúdo do meu primeiro artigo de teste. Ele contém informações importantes sobre o sistema.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/articles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"articles"
+							]
+						},
+						"description": "Criar novo artigo (requer permissão admin ou editor)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Articles (All)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/articles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"articles"
+							]
+						},
+						"description": "Listar todos os artigos (requer autenticação, qualquer permissão)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Article by ID (All)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/articles/{{article_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"articles",
+								"{{article_id}}"
+							]
+						},
+						"description": "Buscar artigo por ID (requer autenticação, qualquer permissão)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Article (Admin/Editor Owner)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Artigo Atualizado\",\n  \"content\": \"Conteúdo atualizado do artigo com novas informações.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/articles/{{article_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"articles",
+								"{{article_id}}"
+							]
+						},
+						"description": "Atualizar artigo (admin pode editar qualquer, editor só o próprio)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Article (Admin/Editor Owner)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/articles/{{article_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"articles",
+								"{{article_id}}"
+							]
+						},
+						"description": "Deletar artigo (admin pode deletar qualquer, editor só o próprio)"
+					},
+					"response": []
+				}
+			],
+			"description": "Gerenciamento de artigos"
+		},
+		{
+			"name": "Test Permissions",
+			"item": [
+				{
+					"name": "Reader tenta criar artigo (Forbidden)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Tentativa de Criar Artigo\",\n  \"content\": \"Reader não deve conseguir criar artigos\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/articles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"articles"
+							]
+						},
+						"description": "Testar que reader não pode criar artigos (deve retornar 403)"
+					},
+					"response": []
+				},
+				{
+					"name": "Editor tenta listar usuários (Forbidden)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"description": "Testar que editor não pode listar usuários (deve retornar 403)"
+					},
+					"response": []
+				},
+				{
+					"name": "Sem autenticação (Unauthorized)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/articles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"articles"
+							]
+						},
+						"description": "Testar endpoint protegido sem token (deve retornar 401)"
+					},
+					"response": []
+				}
+			],
+			"description": "Testes de validação de permissões"
+		}
+	]
+}

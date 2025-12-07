@@ -14,6 +14,7 @@ API RESTful headless desenvolvida com NestJS, PostgreSQL e TypeORM que permite:
 - 🎯 Sistema de permissões com 3 níveis de acesso
 - 🗑️ Soft delete em todas as entidades
 - 🐳 Ambiente completo via Docker
+- 📮 Collection do Postman pronta para importação e testes
 
 ## 🚀 Tecnologias
 
@@ -82,6 +83,53 @@ docker compose down
 # Parar e remover volumes (apaga dados do banco)
 docker compose down -v
 ```
+
+## 📮 Testando com Postman
+
+O projeto inclui uma **Postman Collection completa** com todos os endpoints configurados e prontos para uso.
+A collection está disponível em: `postman-collection/Article-System.postman_collection.json`
+
+### 🚀 Como Importar
+
+1. Abra o Postman
+2. Clique em **Import** (canto superior esquerdo)
+3. Selecione o arquivo `Article-System.postman_collection.json`
+4. A collection será importada com todas as 19 requisições organizadas
+
+### ✨ Recursos Automáticos
+
+A collection possui **scripts de teste automáticos** que:
+
+- 🔑 **Salvam o JWT automaticamente** após login
+- 👤 **Salvam IDs de usuários** criados
+- 📝 **Salvam IDs de artigos** criados
+- 🎯 **Salvam IDs das permissões** (admin, editor, reader)
+
+Isso significa que você **não precisa copiar e colar tokens ou IDs manualmente**!
+
+### 🎯 Fluxo de Uso Recomendado
+
+1. **Inicie a aplicação** (Docker ou local)
+2. **Execute "Login Admin"** na pasta Auth
+   - O JWT será salvo automaticamente
+3. **Execute "Get All Permissions"** na pasta Permissions
+   - Os IDs das permissões serão salvos automaticamente
+4. **Explore os endpoints** de Users e Articles
+   - Todos usarão o token automaticamente
+5. **Teste as permissões** na pasta "Test Permissions"
+   - Veja como as diferentes roles funcionam
+
+### 🔧 Variáveis de Ambiente
+
+A collection utiliza as seguintes variáveis (gerenciadas automaticamente):
+
+- `base_url` - URL base da API (padrão: http://localhost:3000)
+- `jwt_token` - Token JWT após login
+- `user_id` - ID do último usuário criado
+- `article_id` - ID do último artigo criado
+- `admin_permission_id` - ID da permissão admin
+- `editor_permission_id` - ID da permissão editor
+- `reader_permission_id` - ID da permissão reader
 
 ## 🗄️ Migrations (Desenvolvimento Local)
 
@@ -163,7 +211,22 @@ curl -X POST http://localhost:3000/users \
   }'
 ```
 
-### 3. Criar um artigo (requer autenticação)
+### 3. Criar usuário com permissões específicas
+
+```bash
+curl -X POST http://localhost:3000/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Editor User",
+    "email": "editor@example.com",
+    "password": "senha123",
+    "permissions": ["editor"]
+  }'
+```
+
+**Permissões disponíveis:** `admin`, `editor`, `reader`
+
+### 4. Criar um artigo (requer autenticação)
 
 ```bash
 curl -X POST http://localhost:3000/articles \
@@ -175,21 +238,21 @@ curl -X POST http://localhost:3000/articles \
   }'
 ```
 
-### 4. Listar artigos
+### 5. Listar artigos
 
 ```bash
 curl http://localhost:3000/articles \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 ```
 
-### 5. Buscar artigo por ID
+### 6. Buscar artigo por ID
 
 ```bash
 curl http://localhost:3000/articles/UUID_DO_ARTIGO \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 ```
 
-### 6. Atualizar artigo
+### 7. Atualizar artigo
 
 ```bash
 curl -X PATCH http://localhost:3000/articles/UUID_DO_ARTIGO \
@@ -200,7 +263,7 @@ curl -X PATCH http://localhost:3000/articles/UUID_DO_ARTIGO \
   }'
 ```
 
-### 7. Deletar artigo (soft delete)
+### 8. Deletar artigo (soft delete)
 
 ```bash
 curl -X DELETE http://localhost:3000/articles/UUID_DO_ARTIGO \
