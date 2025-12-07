@@ -46,17 +46,12 @@ async function seedDatabase(app: INestApplication): Promise<void> {
 
     if (!rootUser) {
       console.log('🌱 Creating root user...');
-      const adminPermission = await permissionsService.findByName('admin');
-
-      if (!adminPermission) {
-        throw new Error('Admin permission not found after seeding');
-      }
 
       await usersService.create({
         name: 'Root Admin',
         email: 'root@example.com',
         password: 'root123456',
-        permissionIds: [adminPermission.id],
+        permissions: ['admin'],
       });
 
       console.log('✅ Root user created successfully');

@@ -24,6 +24,12 @@ export class PermissionsService {
     return this.permissionsRepository.findOne({ where: { name } });
   }
 
+  async findByNames(names: string[]): Promise<Permission[]> {
+    return this.permissionsRepository.find({
+      where: { name: In(names) },
+    });
+  }
+
   async seedPermissions(): Promise<void> {
     const permissions = [
       {

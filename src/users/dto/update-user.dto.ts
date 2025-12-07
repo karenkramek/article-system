@@ -4,7 +4,7 @@ import {
   IsString,
   MinLength,
   IsArray,
-  IsUUID,
+  IsIn,
 } from 'class-validator';
 
 export class UpdateUserDto {
@@ -23,6 +23,7 @@ export class UpdateUserDto {
 
   @IsArray()
   @IsOptional()
-  @IsUUID('4', { each: true })
-  permissionIds?: string[];
+  @IsString({ each: true })
+  @IsIn(['admin', 'editor', 'reader'], { each: true })
+  permissions?: string[];
 }

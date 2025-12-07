@@ -5,7 +5,7 @@ import {
   MinLength,
   IsArray,
   IsOptional,
-  IsUUID,
+  IsIn,
 } from 'class-validator';
 
 export class CreateUserDto {
@@ -24,6 +24,7 @@ export class CreateUserDto {
 
   @IsArray()
   @IsOptional()
-  @IsUUID('4', { each: true })
-  permissionIds?: string[];
+  @IsString({ each: true })
+  @IsIn(['admin', 'editor', 'reader'], { each: true })
+  permissions?: string[];
 }

@@ -20,7 +20,7 @@ describe('UsersService', () => {
   };
 
   const mockPermissionsService = {
-    findByIds: jest.fn(),
+    findByNames: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -54,7 +54,7 @@ describe('UsersService', () => {
       name: 'Test User',
       email: 'test@example.com',
       password: 'password123',
-      permissionIds: ['perm-1'],
+      permissions: ['admin'],
     };
 
     it('should create a new user successfully', async () => {
@@ -63,7 +63,7 @@ describe('UsersService', () => {
 
       mockUserRepository.findOne.mockResolvedValue(null);
       (bcrypt.hash as jest.Mock).mockResolvedValue(hashedPassword);
-      mockPermissionsService.findByIds.mockResolvedValue(mockPermissions);
+      mockPermissionsService.findByNames.mockResolvedValue(mockPermissions);
       mockUserRepository.create.mockReturnValue({
         ...createUserDto,
         password: hashedPassword,

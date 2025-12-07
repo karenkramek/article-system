@@ -21,7 +21,12 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const { email, password, permissionIds, ...userData } = createUserDto;
+    const {
+      email,
+      password,
+      permissions: permissionNames,
+      ...userData
+    } = createUserDto;
 
     // Check if email already exists
     const existingUser = await this.usersRepository.findOne({
@@ -34,10 +39,10 @@ export class UsersService {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Get permissions
+    // Get permissions by names
     const permissions: Permission[] =
-      permissionIds && permissionIds.length > 0
-        ? await this.permissionsService.findByIds(permissionIds)
+      permissionNames && permissionNames.length > 0
+        ? await this.permissionsService.findByNames(permissionNames)
         : [];
 
     const user = this.usersRepository.create({
@@ -77,7 +82,12 @@ export class UsersService {
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findOne(id);
 
-    const { email, password, permissionIds, ...userData } = updateUserDto;
+    const {
+      email,
+      password,
+      permissions: permissionNames,
+      ...userData
+    } = updateUserDto;
 
     // Check if email is being changed and if it already exists
     if (email && email !== user.email) {
@@ -96,8 +106,9 @@ export class UsersService {
     }
 
     // Update permissions if provided
-    if (permissionIds) {
-      user.permissions = await this.permissionsService.findByIds(permissionIds);
+    if (permissionNames) {
+      user.permissions =
+        await this.permissionsService.findByNames(permissionNames);
     }
 
     Object.assign(user, userData);
