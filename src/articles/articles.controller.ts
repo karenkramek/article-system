@@ -27,7 +27,7 @@ export class ArticlesController {
   @Post()
   @RequirePermissions('admin', 'editor')
   @HttpCode(HttpStatus.CREATED)
-  create(
+  async create(
     @Body() createArticleDto: CreateArticleDto,
     @CurrentUser() user: User,
   ) {
@@ -36,19 +36,19 @@ export class ArticlesController {
 
   @Get()
   @RequirePermissions('admin', 'editor', 'reader')
-  findAll() {
+  async findAll() {
     return this.articlesService.findAll();
   }
 
   @Get(':id')
   @RequirePermissions('admin', 'editor', 'reader')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.articlesService.findOne(id);
   }
 
   @Patch(':id')
   @RequirePermissions('admin', 'editor')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateArticleDto: UpdateArticleDto,
     @CurrentUser() user: User,

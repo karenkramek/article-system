@@ -27,36 +27,25 @@ export class UsersController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createUserDto: CreateUserDto) {
-    const user = await this.usersService.create(createUserDto);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...result } = user;
-    return result;
+    return this.usersService.create(createUserDto);
   }
 
   @Get()
   @RequirePermissions('admin')
   async findAll() {
-    const users = await this.usersService.findAll();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    return users.map(({ password, ...user }) => user);
+    return this.usersService.findAll();
   }
 
   @Get(':id')
   @RequirePermissions('admin')
   async findOne(@Param('id') id: string) {
-    const user = await this.usersService.findOne(id);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...result } = user;
-    return result;
+    return this.usersService.findOne(id);
   }
 
   @Patch(':id')
   @RequirePermissions('admin')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const user = await this.usersService.update(id, updateUserDto);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...result } = user;
-    return result;
+    return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')

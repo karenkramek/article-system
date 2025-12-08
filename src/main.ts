@@ -1,6 +1,11 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, INestApplication } from '@nestjs/common';
+import {
+  ValidationPipe,
+  INestApplication,
+  ClassSerializerInterceptor,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { PermissionsService } from './permissions/permissions.service';
 import { UsersService } from './users/users.service';
@@ -18,6 +23,9 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  // Enable global class serializer interceptor (respects @Expose decorators)
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   // Enable CORS if needed
   app.enableCors();
